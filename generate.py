@@ -7,7 +7,7 @@ genai.configure(api_key=os.environ.get("GEMINI_API_KEY"))
 def get_ai_content():
     """調用 Google Gemini 免費 API 生成網頁內容"""
     # 使用目前最適合自動化、免費且速度極快的 gemini-1.5-flash 模型
-    model = genai.GenerativeModel('models/gemini-1.5-flash')
+    model = genai.GenerativeModel('gemini-1.5-flash-latest')
     
     prompt = "你是一個科技網站總編輯，請用繁體中文撰寫內容。請提供今天的一句科技名人金句、背後的故事背景，以及這句話對當代科技發展的啟示。請用乾淨的 HTML 格式輸出（只需要 <div> 內的標籤，不用給完整的 html 宣告）。"
     
