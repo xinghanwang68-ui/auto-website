@@ -1,19 +1,18 @@
 import os
-from openai import OpenAI
+import google.generativeai as genai
 
-# 1. 初始化 AI 客戶端 (會自動讀取環境變數中的 API Key)
-client = OpenAI(api_key=os.environ.get("OPENAI_API_KEY"))
+# 1. 初始化 Gemini API (讀取環境變數中的 GEMINI_API_KEY)
+genai.configure(api_key=os.environ.get("GEMINI_API_KEY"))
 
 def get_ai_content():
-    """調用 AI 生成今天的網頁內容"""
-    response = client.chat.completions.create(
-        model="gpt-4o-mini", # 使用輕量且便宜的模型即可
-        messages=[
-            {"role": "system", "content": "你是一個科技網站總編輯，請用繁體中文撰寫內容。"},
-            {"role": "user", "content": "請提供今天的一句科技名人金句、背後的故事背景，以及這句話對當代科技發展的啟示。請用乾淨的 HTML 格式輸出（只需要 <div> 內的標籤，不用給完整的 html 宣告）。"}
-        ]
-    )
-    return response.choices[0].message.content
+    """調用 Google Gemini 免費 API 生成網頁內容"""
+    # 使用目前最適合自動化、免費且速度極快的 gemini-1.5-flash 模型
+    model = genai.GenerativeModel('gemini-1.5-flash')
+    
+    prompt = "你是一個科技網站總編輯，請用繁體中文撰寫內容。請提供今天的一句科技名人金句、背後的故事背景，以及這句話對當代科技發展的啟示。請用乾淨的 HTML 格式輸出（只需要 <div> 內的標籤，不用給完整的 html 宣告）。"
+    
+    response = model.generate_content(prompt)
+    return response.text
 
 def create_html(ai_content):
     """將 AI 內容嵌入到完整的 HTML 模板中"""
@@ -47,24 +46,22 @@ def create_html(ai_content):
     <body>
         <div class="container">
             <h1>🤖 AI 每日科技情報站</h1>
-            <p style="color: #95a5a6;">更新時間：2026年 每日定時自動更新</p>
+            <p style="color: #95a5a6;">更新時間：每日定時自動更新</p>
             <div class="content">
                 {ai_content}
             </div>
             <div class="footer">
-                本網頁由 Python + GitHub Actions + OpenAI 自動化生成
+                本網頁由 Python + GitHub Actions + Gemini 免費 API 自動化生成
             </div>
         </div>
     </body>
     </html>
     """
     
-    # 寫入 index.html
     with open("index.html", "w", encoding="utf-8") as f:
         f.write(html_template)
     print("網頁更新成功！")
 
 if __name__ == "__main__":
-    # 執行流程
     content = get_ai_content()
     create_html(content)
