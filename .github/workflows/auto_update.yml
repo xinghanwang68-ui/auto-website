@@ -5,6 +5,12 @@ on:
     - cron: '0 0 * * *'
   workflow_dispatch: 
 
+# 核心修正 1：明確告訴 GitHub Actions 這個機器人擁有發布網頁的權限
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
@@ -16,11 +22,11 @@ jobs:
     - name: Set up Python
       uses: actions/setup-python@v5
       with:
-        python-version: '3.11' # 順手升級 Python 版本，解決過期警告
+        python-version: '3.11'
 
     - name: Install dependencies
       run: |
-        pip install google-genai # 安裝 Google 2026 最新官方 SDK 庫
+        pip install google-genai
 
     - name: Run script
       env:
@@ -28,8 +34,12 @@ jobs:
       run: |
         python generate.py
 
-    - name: Deploy to GitHub Pages
-      uses: peaceiris/actions-gh-pages@v4
+    # 核心修正 2：使用官方推薦的步驟打包並上傳網頁成果
+    - name: Upload artifact
+      uses: actions/upload-pages-artifact@v3
       with:
-        github_token: ${{ secrets.GITHUB_TOKEN }}
-        publish_dir: ./
+        path: ./ # 打包當前目錄下的 index.html
+
+    - name: Deploy to GitHub Pages
+      id: deployment
+      uses: actions/deploy-pages@v4 # 真正呼叫官方 Actions 發布
