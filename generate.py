@@ -1,18 +1,18 @@
 import os
-import google.generativeai as genai
-
-# 1. 初始化 Gemini API (讀取環境變數中的 GEMINI_API_KEY)
-genai.configure(api_key=os.environ.get("GEMINI_API_KEY"))
+from google import genai # 導入 Google 2026 最新官方庫
 
 def get_ai_content():
-    """調用 Google Gemini 免費 API 生成網頁內容"""
-    # 使用目前最適合自動化、免費且速度極快的 gemini-1.5-flash 模型
-    #model = genai.GenerativeModel('gemini-1.5-flash-latest')
-    model = genai.GenerativeModel('gemini-pro')
-        
+    """調用新版 Google GenAI 免費 API 生成網頁內容"""
+    # 1. 密鑰會自動讀取環境變數 GEMINI_API_KEY，直接初始化客戶端
+    client = genai.Client()
+    
     prompt = "你是一個科技網站總編輯，請用繁體中文撰寫內容。請提供今天的一句科技名人金句、背後的故事背景，以及這句話對當代科技發展的啟示。請用乾淨的 HTML 格式輸出（只需要 <div> 內的標籤，不用給完整的 html 宣告）。"
     
-    response = model.generate_content(prompt)
+    # 2. 調用最新、免費且速度最快的 gemini-2.5-flash 模型
+    response = client.models.generate_content(
+        model='gemini-2.5-flash',
+        contents=prompt,
+    )
     return response.text
 
 def create_html(ai_content):
@@ -52,7 +52,7 @@ def create_html(ai_content):
                 {ai_content}
             </div>
             <div class="footer">
-                本網頁由 Python + GitHub Actions + Gemini 免費 API 自動化生成
+                本網頁由 Python + GitHub Actions + Google New GenAI API 自動化生成
             </div>
         </div>
     </body>
