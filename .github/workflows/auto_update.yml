@@ -16,11 +16,11 @@ jobs:
     - name: Set up Python
       uses: actions/setup-python@v5
       with:
-        python-version: '3.10'
+        python-version: '3.11' # 順手升級 Python 版本，解決過期警告
 
     - name: Install dependencies
       run: |
-        pip install google-generativeai
+        pip install google-genai # 安裝 Google 2026 最新官方 SDK 庫
 
     - name: Run script
       env:
