@@ -74,7 +74,7 @@ def get_ai_content():
 請用乾淨的 HTML 格式輸出（只需要 <div> 內的標籤，不用給完整的 html 宣告）。"""
 
     last_error = None
-    for attempt in range(1, max_retries+1)
+    for attempt in range(1, max_retries+1):
         try:
             response = client.models.generate_content(
                 model='gemini-2.5-flash',
