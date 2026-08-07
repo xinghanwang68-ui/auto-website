@@ -68,13 +68,13 @@ HOMEPAGE_TEMPLATE = """\
 # ==========================================
 
 def get_ai_content(max_retries=4, base_delay=10):
-    """調用 Google GenAI API 生成內容"""
+    """調用 Google GenAI API 生成內容，並包含重試機制"""
     client = genai.Client()
     prompt = """你是一個科技網站總編輯，請用繁體中文撰寫內容。請提供今天的一句科技名人金句、背後的故事背景，以及這句話對當代科技發展的啟示。
 請用乾淨的 HTML 格式輸出（只需要 <div> 內的標籤，不用給完整的 html 宣告）。"""
 
     last_error = None
-    for attempt in range(1, max_retries+1):
+    for attempt in range(1, max_retries + 1):
         try:
             response = client.models.generate_content(
                 model='gemini-2.5-flash',
@@ -83,13 +83,13 @@ def get_ai_content(max_retries=4, base_delay=10):
             return response.text
         except Exception as e:
             last_error = e
-            print(f"第{attempt} 次呼叫失敗: {e}")
+            print(f"第 {attempt} 次呼叫失敗: {e}")
             if attempt < max_retries:
                 delay = base_delay * (2 ** (attempt - 1))
                 print(f"等待 {delay} 秒後重試...")
                 time.sleep(delay)
     raise last_error
-    
+
 def process_daily_content():
     today_str = datetime.now().strftime("%Y-%m-%d")
     
@@ -99,6 +99,7 @@ def process_daily_content():
     except Exception as e:
         print(f"AI 內容產生失敗, 跳過今日更新: {e}")
         return
+        
     page_html = PAGE_TEMPLATE.format(today_str=today_str, ai_content=ai_content)
 
     # 寫入當天檔案 (例如: 2026-07-24.html)
