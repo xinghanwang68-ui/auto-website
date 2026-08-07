@@ -72,7 +72,6 @@ def get_ai_content(max_retries=4, base_delay=10):
     client = genai.Client()
     prompt = """你是一個科技網站總編輯，請用繁體中文撰寫內容。請提供今天的一句科技名人金句、背後的故事背景，以及這句話對當代科技發展的啟示。
 請用乾淨的 HTML 格式輸出（只需要 <div> 內的標籤，不用給完整的 html 宣告）。"""
-
     last_error = None
     for attempt in range(1, max_retries + 1):
         try:
