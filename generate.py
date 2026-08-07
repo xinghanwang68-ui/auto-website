@@ -67,7 +67,7 @@ HOMEPAGE_TEMPLATE = """\
 # 邏輯處理區
 # ==========================================
 
-def get_ai_content():
+def get_ai_content(max_retries=4, base_delay=10):
     """調用 Google GenAI API 生成內容"""
     client = genai.Client()
     prompt = """你是一個科技網站總編輯，請用繁體中文撰寫內容。請提供今天的一句科技名人金句、背後的故事背景，以及這句話對當代科技發展的啟示。
